@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Luaj Plugin
+Bundle-SymbolicName: luaj-plugin; singleton:=true
+Bundle-Version: 1.0.0.alpha1-01
+Bundle-Activator: org.luaj.plugin.Activator
+Bundle-Vendor: org.luaj
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.jface.text,
+ org.eclipse.ui.editors
+Bundle-RequiredExecutionEnvironment: J2SE-1.3
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .

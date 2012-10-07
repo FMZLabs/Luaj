@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="Luaj Editor"
+            extensions="lua"
+            icon="icons/luajdoc.gif"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.luaj.plugin.editors.LuajEditor"
+            id="org.luaj.plugin.editors.LuajEditor">
+      </editor>
+   </extension>
+
+</plugin>
