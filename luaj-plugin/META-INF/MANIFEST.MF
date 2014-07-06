@@ -8,7 +8,11 @@ Bundle-Vendor: org.luaj
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,
- org.eclipse.ui.editors
-Bundle-RequiredExecutionEnvironment: J2SE-1.3
+ org.eclipse.ui.editors,
+ org.eclipse.core.resources,
+ org.eclipse.jdt.core;bundle-version="3.9.1"
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/luaj-jse-3.0.jar,
+ lib/bcel-5.2.jar

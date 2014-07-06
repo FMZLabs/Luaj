@@ -14,4 +14,143 @@
       </editor>
    </extension>
 
+
+   <extension
+         id="org.luaj.plugin.luajbuilder"
+         name="Luaj Project Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="org.luaj.plugin.builder.LuajBuilder">
+         </run>
+      </builder>
+   </extension>
+
+   <extension
+         id="org.luaj.plugin.luajnature"
+         name="Luaj Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.luaj.plugin.builder.LuajNature">
+         </run>
+      </runtime>
+      <builder
+            id="org.luaj.plugin.luajbuilder">
+      </builder>
+	   <requires-nature id="org.eclipse.jdt.core.javanature"/>
+   </extension>
+
+   <extension
+         id="org.luaj.plugin.syntaxerror"
+         name="Luaj Syntax Error"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="Luaj Nature Commands"
+            id="org.luaj.plugin.nature.category">
+      </category>
+
+      <command
+            name="Add Luaj Project Nature"
+            defaultHandler="org.luaj.plugin.AddLuajNatureHandler"
+            categoryId="org.luaj.plugin.nature.category"
+            id="sorg.luaj.plugin.AddLuajNatureCommand">
+      </command>
+
+      <command
+            name="Remove Luaj Project Nature"
+            defaultHandler="org.luaj.plugin.RemoveLuajNatureHandler"
+            categoryId="org.luaj.plugin.nature.category"
+            id="sorg.luaj.plugin.RemoveLuajNatureCommand">
+      </command>
+
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.popupMenus">
+
+      <objectContribution
+            adaptable="false"
+            id="org.luaj.plugin.RemoveLuajNatureToIJavaProject"
+            objectClass="org.eclipse.jdt.core.IJavaProject">
+         <action
+               class="org.luaj.plugin.RemoveLuajNatureHandler"
+               icon="icons/luajdoc.gif"
+               id="org.luaj.plugin.RemoveLuajNatureToIJavaProjectAction"
+               label="Remove Luaj Nature from IJavaProject">
+         </action>
+      </objectContribution>
+
+      <objectContribution
+            adaptable="false"
+            id="org.luaj.plugin.AddLuajNatureToIJavaProject"
+            objectClass="org.eclipse.jdt.core.IJavaProject">
+         <action
+               class="org.luaj.plugin.AddLuajNatureHandler"
+               icon="icons/luajdoc.gif"
+               id="org.luaj.plugin.AddLuajNatureToIJavaProjectAction"
+               label="Add Luaj Nature to IJavaProject">
+            <enablement>
+               <not>
+                  <objectState
+                        name="hasnature"
+                        value="true">
+                  </objectState>
+               </not>
+            </enablement>
+         </action>
+            
+      </objectContribution>
+      
+      <objectContribution
+            adaptable="false"
+            id="org.luaj.plugin.AddLuajNatureToIProject"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="org.luaj.plugin.AddLuajNatureHandler"
+               icon="icons/luajdoc.gif"
+               id="org.luaj.plugin.AddLuajNatureToIProjectAction"
+               label="Add Luaj Nature to IProject">
+            <enablement>
+               <not>
+                  <objectState
+                        name="hasnature"
+                        value="true">
+                  </objectState>
+               </not>
+            </enablement>
+         </action>
+      </objectContribution>
+
+   </extension>
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            adaptable="true"
+            class="org.luaj.plugin.DecorateHasLuajNature"
+            icon="icons/luajproject.gif"
+            id="sorg.luaj.plugin.ProjectLuajNatureDecotrator"
+            label="Resource Decorator"
+            lightweight="true"
+            location="TOP_LEFT"
+            state="true">
+         <enablement>
+            <objectClass
+                  name="org.eclipse.core.resources.IProject">
+            </objectClass>
+         </enablement>
+      </decorator>
+   </extension>
+
 </plugin>
