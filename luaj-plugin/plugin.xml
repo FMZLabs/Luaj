@@ -152,5 +152,61 @@
          </enablement>
       </decorator>
    </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.luaj.plugin.launch.LaunchConfigurationDelegate"
+            id="org.luaj.plugin.launch.luajApp"
+            modes="run, debug"
+            name="Luaj App"
+            public="true">
+      </launchConfigurationType>
+   </extension>
+	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+	    <launchConfigurationTypeImage
+	        icon="icons/luajdoc.gif"
+	        configTypeID="org.luaj.plugin.launch.luajApp"
+	        id="org.luaj.plugin.launch.luajAppLaunchImage">
+	    </launchConfigurationTypeImage>
+	</extension>
+	<extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+	    <launchConfigurationTabGroup
+           class="org.luaj.plugin.launch.LuajAppTabGroup"
+           description="Launch a Luaj script file"
+           id="org.luaj.plugin.launch.luajAppTabGroup"
+           type="org.luaj.plugin.launch.luajApp">
+	    </launchConfigurationTabGroup>
+	</extension>
+	<extension point="org.eclipse.debug.ui.launchShortcuts">
+	    <shortcut
+	        id="org.luaj.plugin.launch.luajAppShortcut"
+	        class="org.luaj.plugin.launch.LuajAppLaunchShortcut"
+	        label="Luaj App"
+	        icon="icons/luajdoc.gif"
+	        modes="run, debug">
+	            <perspective id="org.eclipse.jdt.ui.JavaPerspective"/>
+	            <perspective id="org.eclipse.jdt.ui.JavaHierarchyPerspective"/>
+	            <perspective id="org.eclipse.jdt.ui.JavaBrowsingPerspective"/>
+	            <perspective id="org.eclipse.debug.ui.DebugPerspective"/>
+	    </shortcut>
+	</extension>
+	<extension
+       id="org.luaj.plugin.launch.LuajLaunchGroup"
+       point="org.eclipse.debug.ui.launchGroups">
+		<launchGroup
+			id = "org.luaj.plugin.launch.luajAppLaunchGroup.debug"
+			mode = "debug"
+			label ="Debug Lua"
+			image = "icons/luajdoc.gif"
+			bannerImage = "icons/luajdoc.gif">
+		</launchGroup>
+		<launchGroup
+			id = "org.luaj.plugin.launch.luajAppLaunchGroup.run"
+			mode = "run"
+			label = "Run Lua"
+			image = "icons/luajdoc.gif"
+			bannerImage = "icons/luajdoc.gif">
+		</launchGroup> 
+	</extension>
 
 </plugin>

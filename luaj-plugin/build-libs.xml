@@ -6,8 +6,8 @@
 	<target name="luaj-lib" unless="luaj.lib.exists">
 	    <mkdir dir="lib"/>
 		<get src="http://downloads.sourceforge.net/project/luaj/luaj-3.0/3.0/luaj-3.0.zip" 
-		    dest="luaj-3.0.zip" skipexisting="true"/>
-		<unzip src="luaj-3.0.zip" dest="lib">
+		    dest="lib/luaj-3.0.zip" skipexisting="true"/>
+		<unzip src="lib/luaj-3.0.zip" dest="lib">
 		    <patternset>
 		        <include name="**/luaj-jse-3.0.jar"/>
 		    </patternset>
@@ -18,9 +18,9 @@
 	<target name="bcel-lib" unless="bcel.lib.exists">
 	    <mkdir dir="lib"/>
 	    <get src="http://luaj.sourceforge.net/lib/bcel-5.2.tar.gz" 
-				dest="bcel-5.2.tar.gz" skipexisting="true"/>
-		<gunzip src="bcel-5.2.tar.gz" dest="bcel-5.2.tar"/>
-		<untar src="bcel-5.2.tar" dest="lib" overwrite="true">
+				dest="lib/bcel-5.2.tar.gz" skipexisting="true"/>
+		<gunzip src="lib/bcel-5.2.tar.gz" dest="lib/bcel-5.2.tar"/>
+		<untar src="lib/bcel-5.2.tar" dest="lib" overwrite="true">
 		    <patternset>
 		        <include name="**/bcel-5.2.jar"/>
 		    </patternset>

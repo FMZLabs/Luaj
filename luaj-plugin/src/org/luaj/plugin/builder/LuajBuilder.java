@@ -20,8 +20,10 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.lib.jse.JsePlatform;
@@ -169,6 +171,14 @@ public class LuajBuilder extends IncrementalProjectBuilder {
 								classfile.create(source, flags, null);
 							System.out.println("Wrote " + classbytes.length
 									+ " bytes to : " + classname);
+
+						
+							// TODO: Update the JavaModel with new class file such as
+							// IPackageFragmentRoot (i.e. IFolder).createPackageFragment()
+							JavaModelManager javaModelManager = JavaModelManager.getJavaModelManager();
+							IClassFile clazz = javaModelManager.createClassFileFrom(classfile, javaProject);
+							System.out.println("Created class: " + clazz);
+							System.out.println("Primary type: " + clazz.findPrimaryType());
 						}
 
 					}

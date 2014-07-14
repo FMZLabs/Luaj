@@ -1,11 +1,24 @@
 package org.luaj.plugin.builder;
 
+import java.net.URL;
+
+import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.luaj.plugin.Activator;
+import org.osgi.framework.Bundle;
 
 public class LuajNature implements IProjectNature {
 
@@ -47,6 +60,53 @@ public class LuajNature implements IProjectNature {
 		newCommands[newCommands.length - 1] = command;
 		desc.setBuildSpec(newCommands);
 		project.setDescription(desc, null);
+
+		// TODO: Add the luaj jar to the class path 
+		// TODO: add a library variable, LUAJ_LIB?
+		/*
+		Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+		Path path = new Path("lib/luaj-jse-3.0.jar");
+		URL url = FileLocator.find(bundle, path, null);
+		String luajpath;
+		try {
+			final URL fileUrl = FileLocator.toFileURL(url);
+			luajpath = fileUrl.getPath();
+			System.out.println("Checking luaj path " +  luajpath);
+			Path luajentry = new Path(luajpath);
+			
+			IJavaProject jProj = (IJavaProject) project.getNature(JavaCore.NATURE_ID);
+			IClasspathEntry[] existingEntries = jProj.getRawClasspath();
+
+			// iterate over the class path
+			for (IClasspathEntry entry : existingEntries)
+			{
+				String entryStr = entry.getPath().toString();
+				IPath entryPath = entry.getPath();
+				System.out.println("-------->  checking entry "+entryPath);
+				if (entryPath.equals(luajentry)) {
+					System.out.println("-------->  luaj already in class path");
+					return;
+				}
+			}
+			System.out.println("-------->  luaj not in class path");
+			final int n = existingEntries.length;
+			IClasspathEntry[] newEntries = new IClasspathEntry[n+1];
+			System.arraycopy(existingEntries,  0,  newEntries,  0, n);			
+			// TODO: also add the source path
+			newEntries[n+0] = JavaCore.newLibraryEntry(luajentry, null,null);
+			jProj.setRawClasspath(newEntries, null);
+			System.out.println("-------->  luaj added to class path");
+			
+
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ResourceException(IStatus.ERROR, path, e.getMessage(), e);
+			// TODO: throw exception
+		}
+		System.out.println("Path to jar: "+luajpath);
+		*/
+
 	}
 
 	/*
