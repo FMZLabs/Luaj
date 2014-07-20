@@ -7,8 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.internal.resources.Folder;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -23,6 +24,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMember;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
@@ -118,8 +120,10 @@ public class LaunchConfigurationUtils {
 	 */
 	public static Set<IType> collectLuajTypesInProject(
 			IProgressMonitor monitor, IJavaProject javaProject) {
-		IType[] types;
 		HashSet<IType> result = new HashSet<IType>(5);
+		/*
+		// Find classpath entries
+		IType[] types;
 		try {
 			IType luaValueType = LaunchConfigurationUtils.getMainType(
 					"org.luaj.vm2.LuaValue", javaProject); //$NON-NLS-1$
@@ -130,8 +134,7 @@ public class LaunchConfigurationUtils {
 			if (length != 0) {
 				for (int i = 0; i < length; i++) {
 					System.out.println("type[i]: " + types[i]);
-					 if (!types[i].isBinary())
-					{
+					if (!types[i].isBinary()) {
 						result.add(types[i]);
 					}
 				}
@@ -141,49 +144,22 @@ public class LaunchConfigurationUtils {
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
+		*/
 
-		// Find classpath entries
 		// Find those that have IPackageFragmentRoot.K_SOURCE
 		// Find sources in those paths
 		// Fond sources that have .lua extensions
 		try {
+			final IProject project = javaProject.getProject();
+			final IPath projectLocation = project.getLocation();
 			for (IClasspathEntry entry : javaProject.getResolvedClasspath(true)) {
-
 				if (entry.getContentKind() == IPackageFragmentRoot.K_SOURCE) {
-					IPath path = entry.getPath();
-					IPath projectLocation = javaProject.getProject().getLocation();
-					final IPath relativePath = path.makeRelativeTo(
-							projectLocation);
-					
-					// TODO: find all .lua files, add to types.
-					IFolder folder = javaProject.getProject().getFolder(relativePath);
-					for (IResource resource : folder.members()) {
-						System.out.println("======= examining " + resource);
-						if (resource.getType() != IResource.FILE) continue;
-						String name = resource.getName();
-						if (name.endsWith(".lua")) {
-							System.out.println("Adding "+name);
-
-							// Find the path segments relative to the source entry.
-							String[] segments = resource.getFullPath().segments();
-							String[] relative = new String[segments.length - path.segmentCount()];
-							System.arraycopy(segments,  path.segmentCount(), relative, 0, relative.length);
-							String s = "";
-							for (String r : relative)
-								s = s + "." + r;
-							s = s.substring(1);
-							s = s.substring(0,s.length()-4);
-							System.out.println("File segments: "+s);
-
-							IType type = LaunchConfigurationUtils.getMainType(
-									s, javaProject); //$NON-NLS-1$
-							System.out.println("Here is the type: " + type);
-
-						}
-						
-					}
+					final IPath path = entry.getPath();
+					final IPath relativePath = path
+							.makeRelativeTo(projectLocation);
+					final IFolder folder = project.getFolder(relativePath);
+					collectLuajFilesFromFolder(javaProject, folder, "", result);
 				}
-
 			}
 		} catch (JavaModelException jme) {
 			jme.printStackTrace();
@@ -193,6 +169,50 @@ public class LaunchConfigurationUtils {
 
 		monitor.done();
 		return result;
+	}
+
+	// Recursively collect files from a source folder.
+	private static void collectLuajFilesFromFolder(IJavaProject javaProject,
+			IFolder folder, String packageName, HashSet<IType> result)
+			throws CoreException {
+		for (IResource resource : folder.members()) {
+			final String name = resource.getName();
+			switch (resource.getType()) {
+			default:
+				break;
+			case IResource.FOLDER: {
+				final IFolder subfolder = (IFolder) resource;
+				final String subpkg = packageName.length() == 0 ? name : packageName + "." + name;
+				collectLuajFilesFromFolder(javaProject, subfolder, subpkg, result);
+				break;
+			}
+			case IResource.FILE: {
+				if (name.endsWith(".lua")) {
+					final String typeName = name.substring(0, name.length() - 4);
+					try {
+						// Find the corresponding class file.
+						final IPath outputDir = javaProject.getOutputLocation();
+						final IProject project = javaProject.getProject();
+						final IPath projectLocation = project.getLocation();
+						final IPath binPath = outputDir.makeRelativeTo(projectLocation);
+						final IFolder binFolder = project.getFolder(binPath);
+						final IPackageFragmentRoot binRoot = javaProject.getPackageFragmentRoot(binFolder);
+						 
+						// create package fragment
+						final IPackageFragment packageFragment = binRoot.createPackageFragment(packageName, true, null);
+						final IClassFile classFile = packageFragment.getClassFile(typeName + ".class");
+						final IType type = classFile.getType();
+						result.add(type);
+					
+					} catch (CoreException ce) {
+						// TODO: log warning.
+						ce.printStackTrace();
+					}
+				}
+				break;
+			}
+			}
+		}
 	}
 
 	public static void collectTypes(Object element, IProgressMonitor monitor,

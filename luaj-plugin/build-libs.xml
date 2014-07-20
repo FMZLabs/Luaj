@@ -10,6 +10,7 @@
 		<unzip src="lib/luaj-3.0.zip" dest="lib">
 		    <patternset>
 		        <include name="**/luaj-jse-3.0.jar"/>
+		        <include name="**/luaj-sources-3.0.jar"/>
 		    </patternset>
 		    <mapper type="flatten"/>
 		</unzip>

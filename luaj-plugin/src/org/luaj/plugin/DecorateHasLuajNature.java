@@ -97,11 +97,9 @@ public class DecorateHasLuajNature implements ILightweightLabelDecorator {
 
 		for (int i = 0; i < natures.length; ++i) {
 			if (LuajNature.NATURE_ID.equals(natures[i])) {
-				System.out.println("Has nature id "+LuajNature.NATURE_ID);
 				return true;
 			}
 		}
-		System.out.println("Does not have nature id "+LuajNature.NATURE_ID);
 		return false;
 	}
 

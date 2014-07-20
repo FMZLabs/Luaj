@@ -21,7 +21,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IClassFile;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.luaj.vm2.Globals;
@@ -127,70 +130,72 @@ public class LuajBuilder extends IncrementalProjectBuilder {
 			deleteMarkers(file);
 
 			try {
-				final InputStream is = file.getContents();
-				final String filename = file.getName();
-				final String chunkname = filename;
-				LineNumberInputStream lnis = new LineNumberInputStream(is);
-				try {
-					IProject project = getProject();
+				final IProject project = getProject();
+				if (!project.hasNature(JavaCore.NATURE_ID)) return;
+				final IJavaProject javaProject = JavaCore.create(project);
 
-					// globals.compiler.compile(lnis, chunkname);
-					final boolean gen_main = true;
-					final Hashtable results = luajc.compileAll(lnis, chunkname,
-							filename, globals, gen_main);
+				// Find the filename relative to the enclosing source folder.
+				IPath resourcePath = file.getFullPath();
+				final IPath outputDir = javaProject.getOutputLocation();
 
-					if (project.hasNature(JavaCore.NATURE_ID)) {
-						final IJavaProject javaProject = JavaCore
-								.create(project);
-						final IPath outputDir = javaProject.getOutputLocation();
+				// Find the folder for the output files.
+				final IPath projectLocation = project.getLocation();
+				final IPath binPath = outputDir.makeRelativeTo(projectLocation);
 
+				// Find the enclosing source file.
+				for (IClasspathEntry entry : javaProject.getResolvedClasspath(true)) {
+					if (entry.getContentKind() != IPackageFragmentRoot.K_SOURCE) continue;
+					final IPath sourcePath = entry.getPath();
+					if (!sourcePath.isPrefixOf(resourcePath)) continue;
+					final IPath relativePath = resourcePath.makeRelativeTo(sourcePath);					
+					final String relativeFilename = relativePath.toString();  // ToPortableString()?
+
+					// Compile the lua source file.
+					final LineNumberInputStream is = new LineNumberInputStream(file.getContents());
+					try {
+						final String filename = relativeFilename;
+						final String basename = relativeFilename.substring(relativeFilename.lastIndexOf('/')+1);
+						final String packages = relativeFilename.substring(0, relativeFilename.length()-basename.length());
+						final String namestem = basename.substring(0, basename.lastIndexOf('.'));
+	
+						final String srcfilename = basename;
+						final String luachunkname = namestem;
+						final boolean gen_main = true;
+						final Hashtable results = luajc.compileAll(is, luachunkname,
+								srcfilename, globals, gen_main);
+	
+						// Persist all the classes generated from this lua source file
 						for (Enumeration e = results.keys(); e.hasMoreElements(); ) {
 							Object name = e.nextElement();
 							Object value = results.get(name); // byte array
 							byte[] classbytes = (byte[]) value;
-
-							// TODO: find location of JDT output.
-
-							IPath projectLocation = project.getLocation();
-							final String classname = name + ".class";
-							final IPath outputPath = outputDir.makeRelativeTo(
-									projectLocation).append("/" + classname);
-
-							// create a new file
-							IFile classfile = project.getFile(outputPath);
+							final String classname = packages + name + ".class";
+							final IPath outputPath = binPath.append("/" + classname);	
+							final IFile classfile = project.getFile(outputPath);
 							createDirs(classfile.getParent());
-
-							// TODO: overwrite existing file
-							final InputStream source = new ByteArrayInputStream(
-									classbytes);
-							final int flags = IResource.FORCE
-									| IResource.ALLOW_MISSING_LOCAL;
+	
+							// overwrite existing file
+							final InputStream source = new ByteArrayInputStream(classbytes);
+							final int flags = IResource.FORCE | IResource.ALLOW_MISSING_LOCAL;
 							if (classfile.exists())
 								classfile.setContents(source, flags, null);
 							else
 								classfile.create(source, flags, null);
-							System.out.println("Wrote " + classbytes.length
-									+ " bytes to : " + classname);
-
-						
-							// TODO: Update the JavaModel with new class file such as
-							// IPackageFragmentRoot (i.e. IFolder).createPackageFragment()
-							JavaModelManager javaModelManager = JavaModelManager.getJavaModelManager();
-							IClassFile clazz = javaModelManager.createClassFileFrom(classfile, javaProject);
-							System.out.println("Created class: " + clazz);
-							System.out.println("Primary type: " + clazz.findPrimaryType());
+							System.out.println("Compiled " + classname);
 						}
+					} catch (LuaError e) {
+						final String msg = e.getMessage();
+						final int line = is.getLineNumber();
 
+						System.out.println("parse failed: " + e.getMessage() + "\n"
+								+ "line: " + line);
+
+						LuajBuilder.this.addMarker(file, msg, line,
+								IMarker.SEVERITY_ERROR);
 					}
-				} catch (LuaError e) {
-					final String msg = e.getMessage();
-					final int line = lnis.getLineNumber();
 
-					System.out.println("parse failed: " + e.getMessage() + "\n"
-							+ "linw: " + line);
-
-					LuajBuilder.this.addMarker(file, msg, line,
-							IMarker.SEVERITY_ERROR);
+					// Found the root source, done compiling this lua file.
+					break;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -207,11 +212,6 @@ public class LuajBuilder extends IncrementalProjectBuilder {
 			System.out.println("creating folder " + folder);
 			folder.create(false, false, null);
 		}
-	}
-
-	private void writeJavaGen(String name, JavaGen javagen) {
-		System.out.println("name: " + name + " bytes: "
-				+ javagen.bytecode.length);
 	}
 
 	private void deleteMarkers(IFile file) {
