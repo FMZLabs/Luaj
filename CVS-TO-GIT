@@ -1,0 +1,12 @@
+rsync -av rsync://luaj.cvs.sourceforge.net/cvsroot/luaj/\* cvs
+python cvs2git --blobfile="blob.dat" --dumpfile="dump.dat" --username="fmunixxx" --fallback-encoding utf-8 cvs
+git clone https://github.com/FMZLabs/luaj.git gitexport
+cd gitexport
+cat ../{blob,dump}.dat | git fast-import
+git reset --hard
+git push -u origin master
+git push origin version_0_8 version_1_0 version_2_0
+git push origin Root_version_0_8 Root_version_1_0 Root_version_2_0
+
+http://cvs2svn.tigris.org/cvs2git.html
+http://stackoverflow.com/questions/20869710/migrate-from-cvs-to-git-without-losing-history
