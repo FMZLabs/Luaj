@@ -1,8 +1,6 @@
-<!DOCTYPE html>
 <html>
 
 <head>
-<title>Getting Started with LuaJ</title>
 <link rel="stylesheet" type="text/css" href="http://www.lua.org/lua.css">
 <META HTTP-EQUIV="content-type" CONTENT="text/html; charset=windows-1252">
 </head>
