@@ -413,7 +413,7 @@ and the math operations include all those supported by Java SE.
 Android applications should use the JsePlatform, and can include the <a href="#luajava">Luajava</a> library
 to simplify access to underlying Android APIs.
 A specialized Globals.finder should be provided to find scripts and data for loading.
-See <a href="examples/android/src/android/LuajView">examples/android/src/android/LuajView</a>
+See <a href="examples/android/src/android/LuajView.java">examples/android/src/android/LuajView.java</a>
 for an example that loads from the "res" Android project directory.
 The ant build script is <a href="examples/android/build.xml">examples/android/build.xml</a>.
 
@@ -603,9 +603,9 @@ The <em>lua</em> connand line tool includes <em>luajava</em>.
 <h1>5 - <a name="5">LuaJ API</a></h1>
 
 <h2>API Javadoc</h2>
-The javadoc for the main classes in the LuaJ API are on line at
+The javadoc for the main classes in the LuaJ API are online at
 <pre>
-	 <a href="http://luaj.org/luaj/3.0/api/index.html">http://luaj.org/luaj/3.0/api</a>
+	 <a href="http://luaj.org/luaj/3.0/api/">http://luaj.org/luaj/3.0/api/</a>
 </pre>
 
 You can also build a local version from sources using
@@ -925,8 +925,7 @@ Files are no longer hosted at LuaForge.
 <li>JSR-223 enhancement: allow both ".lua" and "lua" as extensions in getScriptEngine()</li>
 <li>JSR-223 fix: use system class loader to support using luaj as JRE extension</li>
 <li>Improve selection logic when binding to overloaded functions using luajava</li>
-<li>Enhance javadoc, put it <a href="docs/api/index.html">in distribution</a>
-and at <a href="http://luaj.sourceforge.net/api/2.0/index.html">http://luaj.sourceforge.net/api/2.0/</a></li>
+<li>Enhance javadoc, put it in distribution at <a href="docs/api/index.html">docs/api/index.html</a> and online at <a href="http://luaj.sourceforge.net/api/2.0/">http://luaj.sourceforge.net/api/2.0/</a></li>
 <li>Major refactor of luajava type coercion logic, improve method selection</li>
 <li>Add lib/luaj-sources-2.0.2.jar for easier integration into an IDE such as Netbeans</li>
 </ul></td></tr>
@@ -1015,7 +1014,7 @@ and at <a href="http://luaj.sourceforge.net/api/2.0/index.html">http://luaj.sour
 <li>Make shared string metatable an actual metatable</li>
 <li>Add sample code that illustrates techniques in creating sandboxed environments</li>
 <li>Add convenience methods to Global to load string scripts with custom environment</li>
-<li>Move online docs to <a href="http://luaj.org/luaj/3.0/api/index.html">http://luaj.org/luaj/3.0/api/</a></li>
+<li>Move online docs to <a href="http://luaj.org/luaj/3.0/api/">http://luaj.org/luaj/3.0/api/</a></li>
 <li>Fix os.time() conversions for pm times.</li>
 </ul></td></tr>
 
