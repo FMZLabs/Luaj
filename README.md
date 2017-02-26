@@ -9,7 +9,7 @@
 
 <hr>
 <h1>
-<a href="README.html"><img src="http://sourceforge.net/dbimage.php?id=196139" alt="" border="0"></a>
+<a href="README.md"><img src="logo.gif" alt="" border="0"></a>
 
 Getting Started with LuaJ
 
@@ -18,8 +18,7 @@ James Roseborough, Ian Farmer, Version 3.0.2
 <p>
 <small>
 Copyright &copy; 2009-2014 Luaj.org.
-Freely available under the terms of the
-<a href="http://sourceforge.net/dbimage.php?id=196142">Luaj license</a>.
+Freely available under the terms of the <a href="LICENSE">Luaj License</a>.
 </small>
 <hr>
 <p>
