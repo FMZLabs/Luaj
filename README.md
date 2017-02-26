@@ -11,7 +11,7 @@
 <h1>
 <a href="README.md"><img src="logo.gif" alt="" border="0"></a>
 
-Getting Started with LuaJ
+Getting Started with Luaj
 
 </h1>
 James Roseborough, Ian Farmer, Version 3.0.2
@@ -369,11 +369,11 @@ that are needed and omitting the line:
 </pre>
 
 
-<h2>Including the LuaJC lua-bytecode-to-Java-bytecode compiler</h2>
+<h2>Including the Luajc lua-bytecode-to-Java-bytecode compiler</h2>
 
 <p>
 To compile from lua to Java bytecode for all lua loaded at runtime,
-install the LuaJC compiler into a <em>globals</em> object use:
+install the Luajc compiler into a <em>globals</em> object use:
 
 <pre>
 	org.luaj.vm2.jse.luajc.LuaJC.install(globals);
@@ -599,10 +599,10 @@ The Java ME platform does not include this library, and it cannot be made to wor
 <p>
 The <em>lua</em> connand line tool includes <em>luajava</em>.
 
-<h1>5 - <a name="5">LuaJ API</a></h1>
+<h1>5 - <a name="5">Luaj API</a></h1>
 
 <h2>API Javadoc</h2>
-The javadoc for the main classes in the LuaJ API are online at
+The javadoc for the main classes in the Luaj API are online at
 <pre>
 	 <a href="http://luaj.org/luaj/3.0/api/">http://luaj.org/luaj/3.0/api/</a>
 </pre>
@@ -621,7 +621,7 @@ which exposes the majority of interfaces used for lua computation.
 </pre>
 
 <h3>Common Functions</h3>
-<em>LuaValue</em> exposes functions for each of the operations in LuaJ.
+<em>LuaValue</em> exposes functions for each of the operations in Luaj.
 Some commonly used functions and constants include:
 <pre>
 	call();               // invoke the function with no arguments
@@ -663,7 +663,7 @@ See the <a href="http://luaj.org/luaj/3.0/api/org/luaj/vm2/Varargs.html">Varargs
 
 <h2>LibFunction</h2>
 The simplest way to implement a function is to choose a base class based on the number of arguments to the function.
-LuaJ provides 5 base classes for this purpose, depending if the function has 0, 1, 2, 3 or variable arguments,
+Luaj provides 5 base classes for this purpose, depending if the function has 0, 1, 2, 3 or variable arguments,
 and if it provide multiple return values.
 <pre>
 	 <a href="http://luaj.org/luaj/3.0/api/org/luaj/vm2/lib/ZeroArgFunction.html">org.luaj.vm2.lib.ZeroArgFunction</a>
