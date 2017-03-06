@@ -486,13 +486,13 @@ A heavier but strong sandbox where each script gets its own class loader and a f
 <h1>4 - <a name="4">Libraries</a></h1>
 
 <h2>Standard Libraries</h2>
-
-Libraries are coded to closely match the behavior specified in
-See <a href="http://www.lua.org/manual/5.1/">standard lua documentation</a> for details on the library API's
+The standard libraries are implemented to closely match the behavior specified in the
+<a href="http://www.lua.org/manual/5.1/">standard lua documentation</a>.
 
 <p>
-The following libraries are loaded by both <em>JsePlatform.standardGlobals()</em> and <em>JmePlatform.standardGlobals()</em>:
-<pre>	base
+Both <em>JsePlatform.standardGlobals()</em> and <em>JmePlatform.standardGlobals()</em> load:
+<pre>
+	base
 	bit32
 	coroutine
 	io
@@ -504,13 +504,15 @@ The following libraries are loaded by both <em>JsePlatform.standardGlobals()</em
 </pre>
 
 <p>
-The <em>JsePlatform.standardGlobals()</em> globals also include:
-<pre>	luajava
+Additionally, <em>JsePlatform.standardGlobals()</em> loads:
+<pre>
+	luajava
 </pre>
 
 <p>
-The <em>JsePlatform.debugGlobals()</em> and <em>JsePlatform.debugGlobals()</em> functions produce globals that include:
-<pre>	debug
+Both <em>JsePlatform.debugGlobals()</em> and <em>JmePlatform.debugGlobals()</em> load:
+<pre>
+	debug
 </pre>
 
 <h3>I/O Library</h3>
